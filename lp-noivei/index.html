@@ -188,7 +188,8 @@ src="https://www.facebook.com/tr?id=2384409048764279&ev=PageView&noscript=1"
 <div style="display:inline-flex;align-items:center;gap:10px;padding:5px 18px 5px 5px;border-radius:999px;background:#EFE6D8;color:#4E6B58;font-size:14px;font-weight:500"><span style="width:28px;height:28px;border-radius:50%;background:#4E6B58;display:flex;align-items:center;justify-content:center"><svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="#F6F1E9"><path d="M12 21s-7.5-4.6-9.5-9.2C1 8.2 3.300 5 6.600 5c2 0 3.700 1.200 5.400 3.200C13.700 6.200 15.400 5 17.400 5c3.300 0 5.600 3.200 4.100 6.800C19.500 16.400 12 21 12 21z"></path></svg></span>Demonstração</div>
 <h2 style="margin: 0; font-family: Helvetica, sans-serif; font-weight: 600; font-size: clamp(30px,3.4vw,46px); line-height: 1.12; letter-spacing: -0.01em; color: #2A1F18; text-wrap: balance">Veja <em style="font-style:italic;color:#8F4F37">na prática,</em> do convite até a lista de presentes.</h2>
 </div>
-<div style="display:flex;gap:28px;width:100%;overflow-x:auto;scroll-snap-type:x mandatory;padding:12px;box-sizing:border-box">
+<div style="position:relative;width:100%">
+<div id="demo-slider" style="display:flex;gap:28px;width:100%;overflow-x:auto;scroll-snap-type:x mandatory;padding:12px;box-sizing:border-box">
 <div style="flex:1 0 min(320px,82%);scroll-snap-align:center;background:#FFFCF7;border:1px solid #DDD0BD;border-radius:32px;padding:14px 14px 24px;box-sizing:border-box;box-shadow:0 0 0 8px #F6F1E9;display:flex;flex-direction:column;gap:18px">
 <img src="./assets/2da265b0e80796f054c7629670f3281e.jpg" alt="Convite digital de casamento aberto no celular" style="width:100%;aspect-ratio:1/1;object-fit:cover;object-position:50% 50%;border-radius:22px;display:block">
 <div style="text-align:center;font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:21px;line-height:1.3;color:#2A1F18;padding:0 8px">O convite que o convidado recebe</div>
@@ -201,6 +202,9 @@ src="https://www.facebook.com/tr?id=2384409048764279&ev=PageView&noscript=1"
 <img src="./assets/49e35ec98fed4ebfbd904d9f4b6372de.jpg" alt="Tela da lista de presentes do app Noivei" style="width:100%;aspect-ratio:1/1;object-fit:cover;object-position:50% 50%;border-radius:22px;display:block">
 <div style="text-align:center;font-family:'Playfair Display',Georgia,serif;font-weight:600;font-size:21px;line-height:1.3;color:#2A1F18;padding:0 8px">A lista que nunca repete presente</div>
 </div>
+</div>
+<button type="button" class="demo-arrow" data-dir="-1" aria-label="Anterior" style="position:absolute;top:calc(50% - 22px);left:4px;z-index:2;width:44px;height:44px;border-radius:50%;border:0;background:#8F4F37;color:#FFFCF7;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 18px -8px rgba(42,31,24,.55);transition:opacity .2s,background .15s"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+<button type="button" class="demo-arrow" data-dir="1" aria-label="Próximo" style="position:absolute;top:calc(50% - 22px);right:4px;z-index:2;width:44px;height:44px;border-radius:50%;border:0;background:#8F4F37;color:#FFFCF7;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 18px -8px rgba(42,31,24,.55);transition:opacity .2s,background .15s"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
 </div>
 </section>
 
@@ -468,6 +472,29 @@ document.querySelectorAll('.faq-btn').forEach(function(b){
     }
   });
 });
+(function(){
+  var s=document.getElementById('demo-slider');if(!s)return;
+  var arrows=document.querySelectorAll('.demo-arrow');
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function update(){
+    var max=s.scrollWidth-s.clientWidth;
+    arrows.forEach(function(a){
+      var d=+a.getAttribute('data-dir');
+      a.style.display=max>4?'flex':'none';
+      var off=d<0?s.scrollLeft<=4:s.scrollLeft>=max-4;
+      a.style.opacity=off?'.35':'1';a.disabled=off;
+    });
+  }
+  arrows.forEach(function(a){
+    a.addEventListener('click',function(){
+      var card=s.firstElementChild;var step=card.getBoundingClientRect().width+28;
+      s.scrollBy({left:(+a.getAttribute('data-dir'))*step,behavior:reduce?'auto':'smooth'});
+    });
+  });
+  s.addEventListener('scroll',update,{passive:true});
+  window.addEventListener('resize',update);
+  update();
+})();
 </script>
 </body>
 </html>
